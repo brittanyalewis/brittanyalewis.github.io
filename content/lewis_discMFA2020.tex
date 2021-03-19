@@ -1,0 +1,568 @@
+%%% GRAPHS ON POS AND CARD ADOPTION
+
+%%%%%%%%%%%%%%%%%
+% PRELIMINARIES %
+%%%%%%%%%%%%%%%%%
+\documentclass[12pt, aspectratio = 169%, handout%
+]{beamer}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{dsfont}	
+\usepackage{epstopdf} %.eps graphs
+\usepackage{pdfpages}
+\usepackage{curve2e,pict2e}
+\usepackage[absolute]{textpos} % to place text/graphics at exact positions
+\usepackage{comment}
+
+
+% ANIMATE GRAPHICS OVER TIME
+%\usepackage{graphicx}
+\usepackage{graphicx} 
+%\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{animate}
+%\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{subfigure}
+
+% FIGURES
+\usepackage{tikz}
+\usetikzlibrary{math,matrix,calc,positioning}
+    
+
+% add space between items http://tex.stackexchange.com/questions/225736/latex-beamer-define-itemsep-globally
+\usepackage{xpatch}
+\xpatchcmd{\itemize}
+  {\def\makelabel}
+  {\setlength{\itemsep}{.5ex}\def\makelabel}
+  {}
+  {}
+
+%font
+\usepackage{mathtools}
+\usepackage[sfdefault]{roboto} %,light
+% \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+% \usepackage[scaled]{helvet} %helvetica
+\newcommand{\myu}[1]{\underline{\smash{#1}}}
+\renewcommand*{\familydefault}{\sfdefault}
+
+
+	\newcommand{\E}{{\mathbb E}} 
+	\newcommand{\R}{{\mathbb R}}
+	\newcommand{\Var}{\mathrm{Var}}
+	\newcommand{\de}{\delta}
+	\newcommand{\be}{\beta}
+	\newcommand{\w}{{\omega}}
+	\newcommand{\e}{\epsilon}
+	\newcommand{\mh}{\hat{\mu}}
+	\newcommand{\gh}{\hat{g}}
+	\newcommand{\bh}{\hat{\beta}}
+	\newcommand{\ga}{\gamma}
+	\newcommand{\1}{{\mathbbm{1}}}
+	\newcommand{\dif}{\mathrm{d}}
+	\newcommand{\half}{{\frac{1}{2}}}
+	\newcommand{\im}{\mathrm{i}}
+	
+	%center itemize
+	\newcommand{\tabitem}{%
+  		\usebeamertemplate{itemize item}\hspace*{\labelsep}
+	}
+	
+	%create global folder path
+	%\newcommand{\folder} {../../Analysis/Stata/output/exhibits1/}
+	
+
+%% Change the bg color to adjust your transition slide background color!
+\newenvironment{transitionframe}{
+  \setbeamercolor{background canvas}{bg=black}
+	\setbeamertemplate{footline}[text line]{}
+	\setbeamertemplate{frametitle}{%
+		\begin{centering}
+			\vspace{.425\textheight} % to center vertically
+		 {\Large \textcolor{white}{\textbf{\insertframetitle}}}\par
+		 \smallskip
+		\end{centering}
+	}
+	\begin{frame}}{%
+   \end{frame}\addtocounter{framenumber}{-1}
+}
+
+% foreign languages, accents, etc.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\newcommand{\foreign}[1]{\emph{#1}} %change to regular text, emph, etc.
+
+% TABLE FORMATTING
+\usepackage{booktabs} %cmidrule
+\usepackage{changepage} %to shift table flush left
+\usepackage{adjustbox} % to put table in margin and fit to page
+% \usepackage{tabu}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\sisetup{%
+	%table-format = -1.2,
+	detect-all,
+	input-symbols = {()[]*},
+	group-digits  = false,
+	table-align-text-post=false
+}
+
+% MATH 
+\newcommand{\lfrac}[2]{#1/#2}
+\newcommand{\lfracp}[2]{(#1)/(#2)}
+\DeclareMathOperator{\asinh}{sinh^{-1}}
+
+% FORMAT BEAMER SLIDES
+% Best beamer theme is no theme 
+% https://www.quora.com/Presentations-What-are-the-best-beamer-themes
+\setbeamertemplate{frametitle}{%
+	\begin{centering}
+		% \vspace{1pt}
+   {\large\textbf{\insertframetitle}}\par
+   \smallskip
+  \end{centering}
+}
+\setbeamertemplate{navigation symbols}{}%
+	
+\setbeamertemplate{footline}%[text line]
+	{%
+	%\hfill%\strut{%
+	\hspace{2.5pt}\raisebox{2.5pt}{\makebox{
+        \scriptsize\sf\color{black!60}%
+				Lewis (Kelley - IU)
+	}}\hfill\raisebox{2.5pt}{\makebox{\scriptsize\sf\color{black!60}\insertframenumber}\hspace{2.5pt} %\hfill%\vspace{2pt}
+    %}%
+    % \hfill
+	}}
+
+\setbeamercolor{title}{fg=black}
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{block title}{fg=black,bg=black!25!white}
+\setbeamercolor{block body}{fg=black,bg=black!25!white}
+\setbeamercolor{alerted text}{fg=red}
+\setbeamercolor{itemize item}{fg=gray}
+\setbeamercolor{enumerate item}{fg=gray}
+\setbeamercolor{itemize subitem}{fg=gray}
+\setbeamercolor{enumerate subitem}{fg=gray}
+\setbeamercolor{itemize subsubitem}{fg=gray}
+\setbeamercolor{enumerate subsubitem}{fg=gray}
+\setbeamercolor{itemize subsubsubitem}{fg=gray}
+\setbeamercolor{enumerate subsubsubitem}{fg=gray}
+\setbeamercolor{section in toc shaded}{use=structure,fg=structure.fg}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{subsection in toc shaded}{fg=black}
+\setbeamercolor{subsection in toc}{fg=black}
+\setbeamercolor{subsubsection in toc shaded}{fg=black}
+\setbeamercolor{subsubsection in toc}{fg=black}
+\newcommand{\mycircle}{\raisebox{.2ex}{$\bullet$}}
+\newcommand{\mysquare}{\raisebox{.3ex}{\rule{.7ex}{.7ex}}}
+\newcommand{\mytriangle}{\raisebox{.2ex}{\scriptsize{$\blacktriangleright$}}}
+\newcommand{\myarabic}{\arabic}
+\setbeamertemplate{itemize item}{}
+\setbeamertemplate{itemize subitem}{\mycircle}
+\setbeamertemplate{itemize subsubitem}{\mysquare}
+\setbeamertemplate{itemize subsubsubitem}{\mytriangle}
+\setbeamertemplate{itemize/enumerate body begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subbody begin}{\normalsize}
+\setbeamertemplate{itemize/enumerate subsubbody begin}{\small}
+\setbeamertemplate{itemize/enumerate subsubsubbody begin}{\small}
+
+\newenvironment{nscenter} 
+ {\parskip=0pt\par\nopagebreak\centering}
+ {\par\noindent\ignorespacesafterend}
+
+% BEAMER BUTTONS
+\setbeamercolor{button}{bg=white,fg=gray}
+\newcommand{\buttonto}[2]{%
+	% \vspace*{\fill}
+	% \begin{minipage}[t][2\baselineskip][t]{\textwidth}
+	\centering
+		\raisebox{2\baselineskip}{
+		\hyperlink{#1}{\beamergotobutton{#2}}
+		}%
+	% \end{minipage}
+}
+\newcommand{\nsbuttonto}[2]{%
+	% \vspace*{\fill}
+	% \begin{minipage}[t][2\baselineskip][t]{\textwidth}
+	\centering
+		%\raisebox{2\baselineskip}{
+		\hyperlink{#1}{\beamergotobutton{#2}}
+		%}%
+	% \end{minipage}
+}
+
+
+% Some colors
+\definecolor{DarkFern}{HTML}{407428}
+\definecolor{DarkCharcoal}{HTML}{4D4944}
+\colorlet{Fern}{DarkFern!85!white}
+\colorlet{Charcoal}{DarkCharcoal!85!white}
+\colorlet{LightCharcoal}{Charcoal!50!white}
+\colorlet{AlertColor}{orange!80!black}
+\colorlet{DarkRed}{red!70!black}
+\colorlet{DarkBlue}{blue!70!black}
+\colorlet{DarkGreen}{green!70!black}
+\colorlet{AlmostBlack}{black!99.9!violet}
+
+% colors 
+\newcommand{\gr}[1]{\textcolor{gray}{#1}}
+\newcommand{\T}[1]{\textcolor{blue}{#1}}
+\newcommand{\C}[1]{\textcolor{orange}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\dc}[1]{\textcolor{DarkCharcoal}{#1}}
+\newcommand{\lc}[1]{\textcolor{LightCharcoal}{#1}}
+\newcommand{\wt}[1]{\textcolor{white}{#1}}
+
+% For lists
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+%additional formatting
+\setbeamersize{text margin left=16pt,text margin right=16pt} 
+
+% SPANISH
+% \usepackage[spanish]{babel}
+\newcommand{\myforeign}[1]{{#1}} % change to {{#1}} for no emphasis; {\textbf {#1}} for bold, etc.
+
+
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+
+%-------------------------------------------------------------------------------%
+% Estout related things
+%-------------------------------------------------------------------------------%
+% http://www.jwe.cc/2012/03/stata-latex-tables-estout/
+%------------------------------------------------------------------------------%
+\newcommand{\sym}[1]{\rlap{#1}}% Thanks to David Carlisle
+
+\let\estinput=\input% define a new input command so that we can still flatten the document
+
+\newcommand{\estwide}[3]{
+\vspace{.75ex}{
+\begin{tabular*}
+{\textwidth}{@{\hskip\tabcolsep\extracolsep\fill}l*{#2}{#3}}
+\toprule
+\estinput{#1}
+\bottomrule
+\addlinespace[.75ex]
+\end{tabular*}
+}
+}
+
+\newcommand{\estauto}[3]{
+\vspace{.75ex}{
+\begin{tabular}{l*{#2}{#3}}
+\toprule
+\estinput{#1}
+\bottomrule
+\addlinespace[.75ex]
+\end{tabular}
+}
+}
+
+
+
+%%%%%% title page %%%%%%%
+\title{\Large\textbf{%
+	Coordinated Betting by Multi-Fund Managers \\
+	\large (Gelly Fu)
+%
+}}
+\author{\Large
+	Brittany Lewis \\
+	Kelley School of Business - IU\\
+	\vspace{2em}
+	\small Discussion for MFA 2020 \\
+	\small $69^{th}$ Annual Meeting
+}
+%\institute{Northwestern}
+
+
+%\date{\large%
+%October 14, 2019}
+
+\begin{document}
+
+
+%%%%%%%%%%%%% TITLE PAGE %%%%%%%%%%%%%%%
+{
+\setbeamercolor{background canvas}{bg=black}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{date}{fg=white}
+\setbeamertemplate{footline}{} 
+\begin{frame}
+	\titlepage
+\end{frame}
+}
+\addtocounter{framenumber}{-1}
+%%%%%%%%%%% end of title page %%%%%%%%%%
+
+\begin{frame}{Motivation}
+\begin{itemize}
+	\item
+	\begin{itemize} \itemsep3.5ex
+		\item Mutual funds larger share of the financial markets than ever before (Falato, Goldstein, 			Hortacsu 2020)
+		\item Mutual funds have incentive to outperform to attract funds (Massa, Patgiri 2008)
+		\item Mutual fund managers' compensation contracts reward outperformance but do not penalize underperformance (Ma, Tang, Gomez 2019)
+		%\item Drivers of outflows of treasuries during COVID (Ma, Xiao, Zeng 2020)
+		\item Do fund managers seek outperformance in a way that harms investors?
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Summary of Main Results}
+\begin{itemize} \itemsep2ex
+		\item Paper proposes new agency problem where managers manage 2 or more funds and 				maximize the probability that one fund outperforms 
+			\begin{itemize}
+				\item To do this:
+					\begin{enumerate}
+						\item Presents model where multi-fund manager maximizes her own 								consumption by selecting negatively correlated stocks across her funds 
+						\item Combines 3 data sources to study whether theory is borne out in the 							data
+					\end{enumerate}
+			\end{itemize}
+		\item \textbf{Main result:} returns less correlated between two funds managed by same manager relative 			to other matched funds
+		\item Other results: These managers take more risk, trade more often, are more heavily weighted 			in volatile sectors such as finance and manufacturing rather than less volatile sectors such 			as telecom and energy
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Robustness Tests and Consistent Outcomes}
+\begin{itemize}
+	\item \textbf{Robustness Tests}
+	\begin{itemize}
+		\item \small SameStyle
+		\item \small TeamSample
+		\item \small Placebo - Managers similar but not identical
+			\begin{itemize}
+				\item At least one manager the same and at least one unique to the 2 funds
+			\end{itemize}
+	\end{itemize}
+	\item \textbf{Consistent Outcomes - funds that engage in negative correlation}
+		\begin{itemize}
+		\item \small Strategically coordinate investments in different industries - opposite portfolio weights 				in more volatile industries (manufacturing and finance rather than telecom and energy)
+		\item \small Take more positions skewed toward small cap in one fund and toward 							large cap in another fund
+		\item \small Risk Taking
+			\begin{itemize}
+				\item Have 0.31\% higher 	volatility			
+				\item Invest in more lottery like stocks 
+			\end{itemize}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Main Comment: Result Depends on Matching}
+\begin{itemize}
+	\item \textbf{ Matching methodology }
+	\begin{itemize} \itemsep1ex
+		\item  Identify funds managed by same manager - funds $i$ and $j$
+		\item  Identify common stocks in both as $C_{i,j}$
+		\item  Identify unique stocks in j relative to i as $U_{i,j}$
+		\item  Match $j$ to the universe of funds in same investment style and size quintile 
+			\begin{itemize} 
+				\item Call each matched fund $M$
+			\end{itemize}
+		\item  Generate synthetic portfolio $M^*$ using fund $j$ and $M$ holdings
+			\begin{itemize} 
+				\item $M^*$ splices together $C_{i,j}$ and $U_{i,M}$
+			\end{itemize}
+		\item  Measure $corr(i,j)$ relative to $corr(i,M^*)$
+	\end{itemize}
+\end{itemize}
+\end{frame}		
+
+\begin{frame}{Main Comment: Result Depends on Matching Cont'd}
+\vspace*{-1em}
+	\begin{itemize}	
+		\item
+		\begin{itemize} 
+			\item \small$M^*$ is synthetic portfolio composed of $C_{i,j}$ and $U_{i,M}$
+			\item \small Result: $corr(i,j) < corr(i,M^*)$
+				\begin{itemize}
+					\item $\Rightarrow$ \textbf{more discussion on the matching process and synthetic fund}
+				\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	
+	\begin{itemize}
+			\item \small Result depends on matching process
+				\begin{itemize}
+%					\item \small If $M$ is matched to entire fund $j$ and $j$ and $i$ have the same 								manager, then $C_{i,j} \Rightarrow M$ likely to be similar to $i$
+%					\begin{itemize}
+%						\item Because of reversion to the mean, $U_{M,i}$ likely to be more 												correlated with $i$ than the stock bets in $j$
+%						\item Good robustness check could be to match $M$ to $U_{j,i}$
+%					\end{itemize}
+					\item How similar are $C_{M,i}$ and $C_{j,i}$? 
+					\item Do they contain the same number of stocks, do they have the same average return?
+					\begin{enumerate}
+						\item Yes: could validate swapping $C_{M,i}$ with $C_{j,i}$
+						\item No: it may be that the interplay between $C_{M,i}$ and $U_{M,i}$ is 											important to track $j$ \\
+							$\Rightarrow$ swapping $C_{M,i}$ with $C_{j,i}$ could overstate $M^*$'s correlation 							with $i$ and drive result that $corr(j,i) < corr(M^*,i)$
+					\end{enumerate}
+				\end{itemize}
+		\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Simple Example}
+\vspace*{-1em}
+	\begin{itemize}	
+		\item
+		\begin{itemize} 
+			\item Fund $i$ has 3 stocks: Target, Walmart, Nike
+			\item Fund $j$ has 3 stocks: Target, Walmart, United
+			\item Fund $M$ has 3 stocks: Walmart, United, Delta
+				\begin{itemize}
+					\item Fund $M$ selected to be similar to $j$, overlap with $j$ is Walmart, United
+					\item $M$'s overlap with $i$ however is only Walmart
+					\item Methodology creates $M^*$ by swapping $M$'s Walmart for $j$'s Target and 							Walmart
+				\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	
+	\begin{itemize}
+		\item
+		\begin{itemize}
+			\item Now depending on how the $U_{M^*,i}$ weighting works, it could matter how United 				and Delta are weighted in the synthetic portfolio
+			\item Extreme example where $U_{j,i}$'s overlap with $U_{M,i}$ is weighted at 0
+				\begin{itemize}	
+					\item Only consider the new bet: Delta
+				\end{itemize}
+		\end{itemize}
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Imagine the Following Stocks}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Fund $i$ Holdings & Fund $j$ Holdings & Fund $M$ Holdings \tabularnewline
+\hline
+\hline 
+$\textcolor{red}{Target}$ & $\textcolor{red}{Target}$ & \textcolor{AlertColor}{Delta} \tabularnewline
+\hline  
+$\textcolor{red}{Walmart}$ & $\textcolor{red}{Walmart}$ & \textcolor{red}{Walmart} \tabularnewline
+\hline 
+$Nike$ & $\textcolor{blue}{United}$  & \textcolor{blue}{United} \tabularnewline
+\hline 
+
+\end{tabular}
+\par\end{center}
+\end{frame}
+
+\begin{frame}{Simple Example}
+\vspace*{1em}
+\small
+\begin{columns}[t]
+	\begin{column}{0.5\textwidth}
+	%\column{.5\textwidth}
+	\centering
+	\vspace*{-2.5em}
+		\begin{center}
+                        \begin{tabular}{|c|c|c|}
+                        \hline
+                         Fund i Return & Fund j Return \tabularnewline
+                        \hline
+                        \hline 
+                        \textcolor{red}{(Target) 2} & \textcolor{red}{(Target) 2}  \tabularnewline
+                        \hline  
+                        \textcolor{red}{(Walmart) 4} & \textcolor{red}{(Walmart) 4}  \tabularnewline
+                        \hline 
+                        (Nike) 3 & \textcolor{blue}{(United) -4}  \tabularnewline
+                        \hline 
+                        \end{tabular}
+                        \par\end{center}
+                        correlation $= 0.24$
+	\end{column}
+	\column{.5\textwidth}
+	\onslide<2->{ % 2-, the minus means stay forever after, could say only stay from 2 - 3 fo example
+	\centering
+	\vspace*{-2.5em}
+	\begin{center}
+                    \begin{tabular}{|c|c|c|}
+                    \hline
+                     Fund i Return & Fund M Return \tabularnewline
+                    \hline
+                    \hline 
+                    \textcolor{red}{(Target) 2} & \textcolor{AlertColor}{(Delta) -2}  \tabularnewline
+                    \hline  
+                    \textcolor{red}{(Walmart) 4} &  \textcolor{red}{(Walmart) 4} \tabularnewline
+                    \hline 
+                    (Nike) 3 &  \textcolor{blue}{(United) -4}   \tabularnewline
+                    \hline 
+                    \end{tabular}
+                    \par\end{center}
+                    correlation $= -0.72$
+		}
+	\end{columns}
+
+        \onslide<3->{
+        \begin{center}
+        \begin{tabular}{|c|c|c|}
+        \hline
+         Fund i Return & Fund $M^*$ Return \tabularnewline
+        \hline
+        \hline 
+        \textcolor{red}{(Target) 2} & \textcolor{red}{(Target) 2}  \tabularnewline
+        \hline  
+        \textcolor{red}{(Walmart) 4} & \textcolor{red}{(Walmart) 4}  \tabularnewline
+        \hline 
+        (Nike) 3 & \textcolor{AlertColor}{(Delta) -2}  \tabularnewline
+        \hline 
+        & \textcolor{blue}{(United) -4}  \tabularnewline
+        \hline 
+        \end{tabular} \\
+        correlation $= 0.33$ \\
+        \par\end{center}
+        }
+        \onslide<4->{ 
+        \vspace{0.25em}
+        \begin{eqnarray*}
+        corr(j,i) = 0.24 &<& corr(M^*,i) = 0.33 }\\
+        \onslide<5->{ \textbf{But} \ corr(j,i) = 0.24 &>& corr(M,i) = -0.72 \rightarrow \textbf{Reverses the result} }
+        \end{eqnarray*}
+
+\vspace*{2em} % +/- # of text lines of vertical space (em is a text line)
+\end{frame}
+
+%\begin{frame}{Macro ImpliTargetions}
+%\begin{itemize}
+%	\item 
+%	\begin{itemize} \itemsep3.5ex
+%		%\item think about how comparing style difference from i to j versus from i to M and return 				correlation from i to j and i to $M*$ correspond to each other. (is that what he is doing or is 			he using $M*$ for both? and what do I think about this?)
+%	\end{itemize}
+%\end{itemize}
+%\end{frame}
+
+
+\begin{frame}{Other Comments - Performance Analysis}
+\begin{itemize}
+	\item Managers engaging in this strategy are 39\% more likely to produce star funds
+		\begin{itemize} 
+			\item Managing two or more is already signal that you are a better manager
+			\begin{itemize}
+				\item Coordination is at the manager level. Worried about bias at the manager level - 					MBA, PhD, past performance at the manager (rather than fund) level 
+			\end{itemize}
+		\end{itemize}
+	%\item spillovers across Multi-Funds, not across Fund Families (which is in contrast to Nanda 2004)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+	\item
+		\begin{itemize} \itemsep3.5ex
+		\item Important question
+		\item Interesting approach
+		\item Additional analysis explaining matching process and creation of synthetic portfolio $M^*$ 				would be valuable
+		\item Additional controls for manager characteristics would be valuable
+		\end{itemize}
+\end{itemize}
+\end{frame}
+
+\end{document}
