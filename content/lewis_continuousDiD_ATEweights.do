@@ -5,7 +5,7 @@ Description:   	calculate ATE weights for continuous DID & plot against actual
 
 Paper Citation: Lewis, Brittany Almquist. "Creditor rights, collateral reuse, 
 				and credit supply." Journal of Financial Economics 149.3 (2023): 
-				451-472.  
+				451-472. [Online Appendix B.2] 
 Paper Link:		https://doi.org/10.1016/j.jfineco.2023.06.001
 Appendix Link:	https://brittanyalewis.github.io/content/lewis_dealerliquidity_onlineappendix.pdf
 Notes:		 	I thank Michael Gmeiner (LSE)for influential discussions. 
